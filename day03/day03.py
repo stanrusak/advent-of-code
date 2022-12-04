@@ -12,14 +12,13 @@ def main():
     # part 2
     priorities2 = [priority(find_badge(*rucksacks[i:i+3])) for i in range(0,len(rucksacks),3)]
     print(f"Part 2: {sum(priorities2)}")
-        
 
 def find_item(rucksack):
 
     middle = len(rucksack) //2
     compartment1 = set(rucksack[:middle])
     compartment2 = set(rucksack[middle:])
-    return compartment1.intersection(compartment2).pop()
+    return (compartment1 & compartment2).pop()
 
 def priority(item):
 
@@ -30,8 +29,7 @@ def priority(item):
 
 def find_badge(elf1, elf2, elf3):
 
-    return set(elf1).intersection(set(elf2)).intersection(set(elf3)).pop()
-
+    return (set(elf1) & set(elf2) & set(elf3)).pop()
 
 if __name__ == "__main__":
     main()
