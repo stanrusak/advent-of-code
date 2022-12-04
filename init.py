@@ -12,7 +12,6 @@ def main():
 def init_files(day):
 
     n = f"{day:02}"
-    print(n)
     os.mkdir(f"day{n}")
     shutil.copy("day00/day00.py", f"day{n}/day{n}.py")
 
