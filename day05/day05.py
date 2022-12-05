@@ -1,20 +1,21 @@
 with open("input.txt", "r") as f:
     data = f.read().strip()
 
-def main():
+def main(data):
 
     crates, instuctions = data.split("\n\n")
     stacks = get_stacks(crates)
     moves = parse_moves(instuctions)
 
     execute_CrateMover_9000(stacks, moves)
-    top_crates = get_top_crates(stacks)
-    print(f"Part 1: {top_crates}")
+    part1 = get_top_crates(stacks)
 
     stacks = get_stacks(crates)
     execute_CrateMover_9001(stacks, moves)
-    top_crates = get_top_crates(stacks)
-    print(f"Part 2: {top_crates}")
+    part2 = get_top_crates(stacks)
+    
+    print(f"Part 1: {part1}")
+    print(f"Part 2: {part2}")
 
 def get_stacks(crates):
 
@@ -40,22 +41,25 @@ def parse_moves(instructions):
 
 def execute_CrateMover_9000(stacks, moves):
 
+    print("CrateMover9000:")
     for repeat, fr, to in moves:
         for _ in range(repeat):
             ind1 = fr-1
             ind2 = to-1
             item = stacks[ind1].pop()
             stacks[ind2].push(item)
-            print(f"Moving item {item} from stack {fr} to stack {to}")
+            print(f"  moving item {item} from stack {fr} to stack {to}")
 
 def execute_CrateMover_9001(stacks, moves):
 
+
+    print("CrateMover9001:")
     for item_num, fr, to in moves:
         ind1 = fr-1
         ind2 = to-1
         items = stacks[ind1].pop_multiple(item_num)
-        stacks[ind2].push_multiple(items)
-        print(f"Moving {item_num} items from stack {fr} to stack {to}")
+        stacks[ind2].extend(items)
+        print(f"  moving {item_num} items from stack {fr} to stack {to}")
             
 def get_top_crates(stacks):
 
@@ -73,16 +77,12 @@ class Stack(list):
 
     def peek(self):
         return self[-1]
-
-    def push_multiple(self, items):
-        self.extend(items)
     
     def pop_multiple(self, items):
 
-        result = []
-        for i in range(items):
-            result.append(self.pop())
-        return reversed(result)
+        result = self[-items:]
+        del self[-items:]
+        return result
 
 if __name__ == "__main__":
-    main()
+    main(data)
