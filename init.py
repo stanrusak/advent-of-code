@@ -12,8 +12,8 @@ def main():
     if now < datetime(year, 12, day, 0, 0, 0):
         exit("Too early!")
 
-    data = fetch_input(day, year)
     init_files(day)
+    data = fetch_input(day, year)
 
     with open(f"day{day:02}/input.txt", "w") as f:
         f.write(data)
@@ -25,7 +25,7 @@ def init_files(day):
     try:
         os.mkdir(name)
     except FileExistsError:
-        exit("Error: {name} already exists")
+        exit(f"Error: {name} already exists")
     
     shutil.copy("day00/day00.py", f"{name}/{name}.py")
 
