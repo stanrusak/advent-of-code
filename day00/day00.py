@@ -16,6 +16,8 @@ def main(data):
     print(f"Part 1: {part1}")
     print(f"Part 2: {part2}")
 
+    return part1, part2
+    
 @pytest.mark.parametrize(
     ('input_data','output'),
     (
