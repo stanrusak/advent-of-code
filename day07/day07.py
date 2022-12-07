@@ -61,13 +61,12 @@ def parse_input(data):
     current = filesystem
     for command in commands:
 
-        if command[:2] == "..":
+        if command.startswith(".."):
             current = current.parent
 
         else:
 
             name, ls_output = command.split('\n$ ls\n')
-
             if name not in current.dirs:
                 d = Dir(name, parent=current)
                 d.get_files(ls_output)
@@ -110,23 +109,18 @@ class Dir:
 
         for line in ls_output.splitlines():
               
-            if line[0] in "123456789":
+            if line[0].isnumeric():
                 size, name = line.split()
                 self.files.append(File(name, size))
 
     @property
-    def size(self):
-
-        if self._size:
-            return self._size
-        else:
-            return self.get_size()
+    def size(self): return self._size if self._size else self.get_size()
 
     def get_size(self):
 
         size = 0
         for d in self.dirs:
-            size += d.get_size()
+            size += d.size
         
         for f in self.files:
             size += f.size
@@ -145,9 +139,7 @@ class Dir:
              result += "  "*level + "🗎 " + d.name + '\n'
         return result
 
-    def __repr__(self):
-
-        return self.tree()
+    def __repr__(self): return self.tree()
 
 class File:
 
