@@ -70,7 +70,7 @@ def parse_input(data):
 
             if name not in current.dirs:
                 d = Dir(name, parent=current)
-                d.get_contents(ls_output)
+                d.get_files(ls_output)
                 current.dirs.append(d)
             current = d
 
@@ -106,14 +106,11 @@ class Dir:
         self.dirs = []
         self._size = None
     
-    def get_contents(self, ls_output):
+    def get_files(self, ls_output):
 
         for line in ls_output.splitlines():
               
-            if line[:3] == 'dir':
-                name = line[4:]
-
-            elif line[0] in "123456789":
+            if line[0] in "123456789":
                 size, name = line.split()
                 self.files.append(File(name, size))
 
