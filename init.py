@@ -45,7 +45,7 @@ def fetch_input(day, year):
         response = session.get(url + "/input")
         if response.status_code == 200:
             data = response.text
-            print(data[:100])
+            print(data[:200])
             return data
         
         print(f"Couldn't get input ({response.status_code}). Retrying...")
