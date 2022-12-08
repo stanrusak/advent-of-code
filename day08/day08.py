@@ -1,4 +1,6 @@
 import pytest
+import numpy as np
+from time import perf_counter
 
 TEST_DATA = """\
 30373
@@ -15,6 +17,15 @@ with open("input.txt", "r") as f:
 def main(data):
     
     grid = [[int(i) for i in row] for row in data.splitlines()]
+    part1, part2 = compute_solution(grid)
+
+    print(f"Part 1: {part1}")
+    print(f"Part 2: {part2}")
+
+    return part1, part2
+
+def compute_solution(grid):
+
     size = len(grid)
 
     invisible = 0
@@ -28,14 +39,10 @@ def main(data):
             
             scenic_score = left * right * up * down
             max_scenic_score = max(max_scenic_score, scenic_score)
+    
+    visible = size ** 2 - invisible
 
-    part1 = size ** 2 - invisible 
-    part2 = max_scenic_score
-
-    print(f"Part 1: {part1}")
-    print(f"Part 2: {part2}")
-
-    return part1, part2
+    return visible, max_scenic_score
 
 def get_visibility(grid, i, j):
     
