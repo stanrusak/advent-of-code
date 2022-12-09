@@ -16,11 +16,11 @@ def main(data):
     moves = [(line.split()[0], int(line.split()[1])) for line in data.splitlines()]
 
     knots = 1
-    visited = tug_on_rope(moves,knots)
+    visited = move(moves,knots)
     part1 = len(visited.values())
     
     knots = 9
-    visited = tug_on_rope(moves, knots) 
+    visited = move(moves, knots) 
     part2 = len(visited.values())
 
     print(f"Part 1: {part1}")
@@ -28,7 +28,7 @@ def main(data):
 
     return part1, part2
 
-def tug_on_rope(moves, N):
+def move(moves, N):
 
     origin = 0 + 0j
     visited = defaultdict(int)
@@ -47,43 +47,18 @@ def tug_on_rope(moves, N):
             
             visited[rope[N]] += 1
 
-        # print(f"== {d} {n} ==\n")
-        # print_grid(rope)
-
     return visited
 
 def update_knot(head, tail):
 
-    for x in [-1,0,1]:
-        for y in [-1j, 0j, 1j]:
-            if head == tail + x + y:
-                return tail
+    if abs(head - tail) < 2:
+        return tail
 
-    for radius in range(2,10):
-
-        for x in range(-radius, radius + 1):
-            for y in [-radius, radius]:
-                if head == tail + x + y*1j:
-                    
-                    ystep = (y // abs(y))
-                    if abs(x) < 2:
-                        return head - ystep*1j
-                    
-                    else:
-                        return head - ystep*1j - x // abs(x)
-
-        for y in range(-radius+1, radius):
-            for x in [-radius, radius]:
-                if head == tail + x + y*1j:
-                    
-                    xstep = (x // abs(x))
-                    if abs(y) < 2:
-                        return head - xstep
-                    
-                    else:
-                        return head - xstep - (y // abs(y))*1j
-
-    raise NotImplementedError(f"Weird case: head={head}, tail={tail}, x={x}, y={y}")
+    d = head - tail
+    x = 0 if d.real == 0 else d.real // abs(d.real)
+    y = 0 if d.imag == 0 else d.imag // abs(d.imag)
+    
+    return tail + x + y*1j
 
 def print_grid(rope, dimensions=((-11,14),(-5,15))):
     
