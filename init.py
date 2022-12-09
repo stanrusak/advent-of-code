@@ -37,19 +37,23 @@ def fetch_input(day, year):
         cookie = f.read().strip()
 
     session = requests.Session()
-    session.headers.update({"Cookie": f"session={cookie}"})
+    session.headers.update({
+        "Cookie": f"session={cookie}",
+        "User-Agent": "https://github.com/stanrusak/advent-of-code/blob/main/init.py by stanislav.rusak@gmail.com",
+        })
     
-    retries = 10
+    retries = 3
     while retries:
         
         response = session.get(url + "/input")
         if response.status_code == 200:
             data = response.text
-            print(data[:200])
+            print("Input preview:\n")
+            print(data[:200]+"...\n")
             return data
         
         print(f"Couldn't get input ({response.status_code}). Retrying...")
-        sleep(1)
+        sleep(2)
         retries -= 1
 
     exit("Error: couldn't get input")
