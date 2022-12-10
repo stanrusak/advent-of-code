@@ -7,9 +7,9 @@ with open("test.txt", "r") as f:
     TEST_DATA = f.read().strip()
 
 with open("expected.txt", "r") as f:
-    expexted_screen = f.read()
+    EXPECTED_SCREEN = f.read()
 
-EXPECTED = 13140, expexted_screen
+EXPECTED = 13140, EXPECTED_SCREEN
 
 def main(data):
 
@@ -19,7 +19,7 @@ def main(data):
     for instruction in instructions:
         device.execute(instruction)
 
-    part1 = sum(device.scores)
+    part1 = sum(device.signal)
     part2 = device.screen
 
     print(f"Part 1: {part1}")
@@ -33,7 +33,7 @@ class Device:
 
         self.clock = 1
         self.X = 1
-        self.scores = []
+        self.signal = []
         self.screen = ''
         self.pixel = 0
 
@@ -45,7 +45,7 @@ class Device:
         self.draw()
 
         if (self.clock - 20) % 40 == 0:
-            self.scores.append(self.X * self.clock)
+            self.signal.append(self.X * self.clock)
 
 
     def execute(self, instruction):
