@@ -1,74 +1,79 @@
 import pytest
 
-with open("test.txt", "r") as f:
-    TEST_DATA = f.read().strip()
-    EXPECTED = 13140, None
-
-
 with open("input.txt", "r") as f:
     data = f.read().strip()
 
+with open("test.txt", "r") as f:
+    TEST_DATA = f.read().strip()
+
+with open("expected.txt", "r") as f:
+    expexted_screen = f.read()
+
+EXPECTED = 13140, expexted_screen
+
 def main(data):
 
-    # data = TEST_DATA
     instructions = [line for line in data.splitlines()]
 
-    cpu = CPU()
+    device = Device()
     for instruction in instructions:
-        cpu.execute(instruction)
-    
-    current = 0
-    screen = ''
-    for i, X in enumerate(cpu.history):
+        device.execute(instruction)
 
-        screen += '#' if abs(X - (current % 40)) < 2 else '.'
-        if (i + 1) % 40 == 0:
-            screen += '\n'
-
-        current += 1
-        # print(f"cycle: {i+1}, X: {X}")
-    print(screen)
-    
-
-    part1 = sum(cpu.scores)
-    part2 = None
+    part1 = sum(device.scores)
+    part2 = device.screen
 
     print(f"Part 1: {part1}")
-    print(f"Part 2: {part2}")
+    print(f"Part 2:\n\n{part2}")
 
     return part1, part2
 
-class CPU:
+class Device:
 
     def __init__(self):
 
         self.clock = 1
         self.X = 1
         self.scores = []
-        self.history = [1]
+        self.screen = ''
+        self.pixel = 0
+
+        self.draw()
 
     def tick(self):
 
-        # print(f"clock: {self.clock}, X: {self.X}, scores: {self.scores}")
         self.clock += 1
-        self.history.append(self.X)
-        
+        self.draw()
+
         if (self.clock - 20) % 40 == 0:
             self.scores.append(self.X * self.clock)
 
-    def add(self, val): self.X += val
 
     def execute(self, instruction):
 
         if instruction.startswith("noop"):
+            
             self.tick()
             return
         
         if instruction.startswith("addx"):
+            
             val = int(instruction[5:])
             self.tick()
             self.add(val)
             self.tick()
+
+    def add(self, val): self.X += val
+    
+    def draw(self):
+
+        if self.pixel > 239:
+            return
+
+        self.screen += '#' if abs(self.X - (self.pixel % 40)) < 2 else '.'
+        if self.clock % 40 == 0:
+            self.screen += '\n'
+        
+        self.pixel += 1
 
 @pytest.mark.parametrize(
     ('input_data','output'),
