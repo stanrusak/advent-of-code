@@ -44,7 +44,6 @@ def main(data):
 
     return part1, part2
 
-
 def compare(left, right, nesting=0):
 
     pr(f"- Compare {left} vs {right}", nesting)
@@ -55,7 +54,7 @@ def compare(left, right, nesting=0):
         if left < right:
             pr(f"- Left side is smaller, so inputs are in the right order", nesting)
             return 1
-        elif left ==  right:
+        elif left == right:
             return 0
         elif left > right:
             pr(f"- Right side is smaller, so inputs are not in the right order", nesting)
@@ -63,33 +62,26 @@ def compare(left, right, nesting=0):
 
     if isinstance(left, int) and isinstance(right, list):
         pr(f"- Mixed types; convert left to {[left]} and retry comparison", nesting)
-        return compare([left], right, nesting)
+        left = [left]
     
     if isinstance(left, list) and isinstance(right, int):
         pr(f"- Mixed types; convert right to {[right]} and retry comparison", nesting)
-        return compare(left,[right], nesting)
+        right = [right]
 
-    if isinstance(left, list) and isinstance(right, list):
+    for l, r in zip_longest(left, right):
         
-        if left == [] and right == []:
-            return 0
+        if l is None:
+            pr("- Left side ran out of items, so inputs are in the right order", nesting)
+            return 1
+        if r is None:
+            pr("- Right side ran out of items, so inputs are not in the right order", nesting)
+            return -1
 
-        for l, r in zip_longest(left, right):
-            
-            if l is None:
-                pr("- Left side ran out of items, so inputs are in the right order", nesting)
-                return 1
-            if r is None:
-                pr("- Right side ran out of items, so inputs are not in the right order", nesting)
-                return -1
-
-            comparison = compare(l, r, nesting)
-            if not comparison:
-                continue
-            else:
-                return comparison
+        comparison = compare(l, r, nesting)
+        if comparison:
+            return comparison
     
-    return comparison
+    return 0
 
 def pr(message, nesting=0):
     if PRINT:
