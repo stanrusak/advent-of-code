@@ -17,7 +17,7 @@ def main(data):
     part1 = count_grains(start, grid)
     grid.show("Part 1")
 
-    parse(data)
+    grid = parse(data)
     grid.add_floor()
     part2 = count_grains(start, grid)
     grid.show("Part 2")
