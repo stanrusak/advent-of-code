@@ -11,16 +11,16 @@ with open("input.txt", "r") as f:
 
 def main(data):
 
-    grid, minx = parse(data)
+    grid = parse(data)
 
-    start = 500 - minx, 0
+    start = 500, 0
     part1 = count_grains(start, grid)
+    grid.show("Part 1")
 
-    pad = 500
-    grid, _ = parse(data)
-    grid.add_floor(pad)
-    start = start[0] + pad, 0
-    part2 = count_grains(start, grid) 
+    parse(data)
+    grid.add_floor()
+    part2 = count_grains(start, grid)
+    grid.show("Part 2")
 
     print(f"Part 1: {part1}")
     print(f"Part 2: {part2}")
@@ -62,8 +62,7 @@ def move_grain(start, grid):
 def parse(data):
 
     coords = []
-    minx = float('inf')
-    maxx = maxy = miny = 0
+    maxy = 0
     for line in data.splitlines():
 
         rockline = []
@@ -71,18 +70,14 @@ def parse(data):
 
             x, y = list(map(int, c.split(',')))
             rockline.append((x, y))
-            
-            minx = min(minx, x)
-            maxx = max(maxx, x)
-            miny = min(miny, y)
             maxy = max(maxy, y)
 
         coords.append(rockline)
 
-    grid = Grid((maxx - minx, maxy - miny))
-    grid.fill(coords, minx)
+    grid = Grid((1000, maxy))
+    grid.fill(coords)
 
-    return grid, minx
+    return grid
 
 class Grid(list):
 
@@ -91,16 +86,18 @@ class Grid(list):
         self._fill = fill
         super().__init__([[fill for _ in range(dims[0]+1)] for _ in range(dims[1]+1)])
 
-    def __repr__(self):
+    def show(self, title, crop=75):
 
-        r = '\n'.join(''.join(line) for line in self)
-        return r
+        l = (2 * crop - len(title)) // 2 
+        r = "\n" + "=" * (l - 1) + f" {title} " + "=" * (l - 1) + "\n"
+        r += '\n'.join(''.join(line[500-crop:500+crop]) for line in self)
+        print(r)
     
     def __call__(self, x, y): return self[y][x]
 
     def empty(self, x, y): return self[y][x] == self._fill
 
-    def fill(self, coords, minx=0):
+    def fill(self, coords):
 
         for line in coords:
             
@@ -112,19 +109,17 @@ class Grid(list):
                 if current[0] == next_[0]:
                     
                     for y in range(min(current[1],next_[1]), max(current[1],next_[1]) + 1):
-                        self[y][current[0] - minx] = '#'
+                        self[y][current[0]] = '#'
                 
                 elif current[1] == next_[1]:
                     
                     for x in range(min(current[0], next_[0]), max(current[0], next_[0]) + 1):
-                        self[current[1]][x - minx] = '#'
+                        self[current[1]][x] = '#'
 
                 current = next_
 
-    def add_floor(self, pad):
+    def add_floor(self):
 
-        for i, line in enumerate(self):
-            self[i] = ['.']*pad + line + ['.']*pad
         self.append(['.']*len(self[0]))
         self.append(['#']*len(self[0]))
 
