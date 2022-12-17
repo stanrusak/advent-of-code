@@ -12,14 +12,14 @@ def main(data):
     parse(data)
 
     # part 1    
-    path, pressure = get_best_path(30,cutoff=1000)
+    path, pressure = get_best_path(30,cutoff=100)
     part1 = pressure
-    print(f"=== Part 1 ===\n\nBest path:\n\n{'->'.join(path[0])}\n")
+    print(f"==== Part 1 ====\n\nBest path:\n\n{'->'.join(path[0])}\n")
 
     # part 2
     path, pressure = get_best_path_with_elephant(26,1000)
     part2 = pressure
-    print(f"=== Part 2 ===\n\nBest paths:\n\nMe: {'->'.join(path[0][0])}\nElephant: {'->'.join(path[0][1])}\n")
+    print(f"==== Part 2 ====\n\nBest paths:\n\nMe: {'->'.join(path[0][0])}\nElephant: {'->'.join(path[0][1])}\n")
 
     print(f"Part 1: {part1}")
     print(f"Part 2: {part2}")
@@ -43,7 +43,7 @@ def get_best_path(minutes, cutoff=1000):
 
     flow_rate = 0
     pressure = 0
-    start = [['AA'], set(), set(), 'AA', flow_rate, pressure]
+    start = [['AA'], set(), 'AA', flow_rate, pressure]
     paths = [start]
     
     for i in range(1, minutes + 1):
@@ -53,23 +53,19 @@ def get_best_path(minutes, cutoff=1000):
         next_step = []
         for item in paths:
 
-            path, on, deadend, prev, flow, pr = item
+            path, on, prev, flow, pr = item
             pr += flow
             
             name = path[-1]
             current = Valve.valves[name]
             if current.flow and not (name in on):
-                
-                if len(current.children) == 1 or len(current.children) == 2 and (current.children[0].name in deadend or current.children[1].name in deadend):
-                    new_deadend = deadend | {current.name}
-                else:
-                    new_deadend = deadend
-                next_step.append([path, on | {name}, new_deadend, name, flow + current.flow, pr])
+
+                next_step.append([path, on | {name}, name, flow + current.flow, pr])
 
             for child in current.children:
                 
-                if child.name != prev and child.name not in deadend:
-                    next_step.append([path + [child.name], on, deadend, name,  flow, pr])
+                if child.name != prev:
+                    next_step.append([path + [child.name], on, name,  flow, pr])
 
 
             next_step.sort(key=lambda x: x[-1])
