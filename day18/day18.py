@@ -47,21 +47,15 @@ def get_airpockets(cubes, bounds):
 def get_surface_area(cubes, bounds):
 
     area = 0
-    for x in range(*bounds[0]):
-        for y in range(*bounds[1]):
-            for z in range(*bounds[2]):
+    for x, y, z in cubes:
 
-                if (x,y,z) in cubes:
-                    sides = 6
-                else:
-                    continue
+        sides = 6
+        for dx, dy, dz in [(1,0,0), (-1,0,0), (0,1,0), (0,-1,0), (0,0,1), (0,0,-1)]:
 
-                for dx, dy, dz in [(1,0,0), (-1,0,0), (0,1,0), (0,-1,0), (0,0,1), (0,0,-1)]:
-
-                    if (x+dx, y+dy, z+dz) in cubes:
-                        sides -= 1
-                
-                area += sides
+            if (x+dx, y+dy, z+dz) in cubes:
+                sides -= 1
+        
+        area += sides
     
     return area
     
