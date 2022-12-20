@@ -1,10 +1,6 @@
 from math import ceil
 import re, pytest
 
-with open("test_input.txt", "r") as f:
-    TEST_DATA = f.read().strip()
-    EXPECTED = 33, 62 * 56
-
 with open("input.txt", "r") as f:
     data = f.read().strip()
 
@@ -51,7 +47,7 @@ def get_paths_optimized(blueprint, minutes, cutoff=24, buffer=10000):
     for _ in range(1, minutes - cutoff + 1):
 
         if len(paths) > buffer:
-            paths = sorted(paths, key=lambda path: (path[-1][-1], path[-1][-2]))[-buffer:]
+            paths = sorted(paths, key=lambda path: path[-1][-1])[-buffer:]
 
         paths = [path + (1, ) for path in paths]
         paths = get_paths(blueprint, 1, paths)
@@ -125,6 +121,10 @@ def parse(data):
         blueprints.append(robots)
     
     return blueprints
+
+with open("test_input.txt", "r") as f:
+    TEST_DATA = f.read().strip()
+    EXPECTED = 33, 62 * 56
 
 @pytest.mark.parametrize(
     ('input_data','output'),
