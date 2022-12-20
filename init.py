@@ -48,7 +48,7 @@ def fetch_input(day, year):
         response = session.get(url + "/input")
         if response.status_code == 200:
             data = response.text
-            print("Input preview:\n")
+            print(f"Input preview ({len(data.splitlines())} lines):\n")
             print(data[:200]+"...\n")
             return data
         
